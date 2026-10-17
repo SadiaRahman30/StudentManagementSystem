@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Management System - Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f0f0f0; margin: 0; }
+        .navbar { background: #4CAF50; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .navbar h2 { margin: 0; }
+        .navbar button { background: white; color: #4CAF50; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; }
+        .content { padding: 20px; max-width: 800px; margin: 0 auto; }
+        h3 { color: #333; }
+        table { width: 100%; background: white; border-collapse: collapse; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        th { background: #4CAF50; color: white; padding: 12px; text-align: left; }
+        td { padding: 12px; border-bottom: 1px solid #eee; }
+        tr:hover { background: #f5f5f5; }
+        .welcome { color: white; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h2>Student Management System</h2>
+        <div>
+            <span class="welcome" id="navUserName">Welcome</span>
+            &nbsp;&nbsp;
+            <button id="logoutBtn">Logout</button>
+        </div>
+    </div>
+
+    <div class="content">
+        <h3>Student Dashboard</h3>
+        <table id="studentTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Department</th>
+                </tr>
+            </thead>
+            <tbody id="studentTableBody">
+                <tr><td>STU-001</td><td>Rahim Ahmed</td><td>rahim@student.com</td><td>Computer Science</td></tr>
+                <tr><td>STU-002</td><td>Fatima Khan</td><td>fatima@student.com</td><td>Software Engineering</td></tr>
+                <tr><td>STU-003</td><td>Arif Hossain</td><td>arif@student.com</td><td>Computer Science</td></tr>
+                <tr><td>STU-004</td><td>Nusrat Jahan</td><td>nusrat@student.com</td><td>Information Technology</td></tr>
+                <tr><td>STU-005</td><td>Kamal Uddin</td><td>kamal@student.com</td><td>Electrical Engineering</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        var currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (!currentUser) {
+            window.location.href = 'index.html';
+        } else {
+            document.getElementById('navUserName').textContent = 'Welcome, ' + currentUser.name;
+        }
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>
