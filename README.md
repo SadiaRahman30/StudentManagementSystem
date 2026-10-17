@@ -1,6 +1,12 @@
 # 🎓 Student Management System (SMS)
 
-A modern, responsive, and cloud-ready **Student Management System** web application built with clean architecture, interactive client-side state management, and an end-to-end automated testing suite with Selenium. Ready for CI/CD deployment with GitHub Actions and Microsoft Azure DevOps.
+[![CI/CD Pipeline](https://github.com/SadiaRahman30/StudentManagementSystem/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/SadiaRahman30/StudentManagementSystem/actions/workflows/ci-cd.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Deployed on GitHub Pages](https://img.shields.io/badge/Deploy-GitHub%20Pages-success.svg)](https://sadiarahman30.github.io/StudentManagementSystem/)
+
+> **Live Demo:** [https://sadiarahman30.github.io/StudentManagementSystem/](https://sadiarahman30.github.io/StudentManagementSystem/)
+
+A modern, responsive, and cloud-ready **Student Management System** web application built with clean architecture, interactive client-side state management, and an end-to-end automated testing suite with Selenium. Features a complete automated CI/CD pipeline using **GitHub Actions**.
 
 ---
 
@@ -123,8 +129,36 @@ python3 run_tests.py
 
 ---
 
-## 🔄 CI/CD Roadmap
+---
 
-- [x] **Phase 1**: Web App Enhancement, CI-ready Headless Selenium Tests & Local Runner.
-- [ ] **Phase 2**: GitHub Actions CI workflow for automated testing on push and PR.
-- [ ] **Phase 3**: CD automated deployment to GitHub Pages or Microsoft Azure Static Web Apps.
+## 🔄 CI/CD Pipeline Architecture
+
+This repository uses **GitHub Actions** to automate continuous integration and continuous delivery:
+
+```mermaid
+flowchart LR
+    A[git push to main] --> B[GitHub Actions Runner]
+    subgraph CI [Continuous Integration]
+      B --> C[Set up Python 3.11]
+      C --> D[Install dependencies]
+      D --> E[Run Headless Selenium Tests]
+    end
+    subgraph CD [Continuous Deployment]
+      E -->|Tests Pass| F[Build Pages Artifact]
+      F --> G[Deploy to GitHub Pages]
+      G --> H[Live Production Website]
+    end
+    E -->|Test Fails| I[Fail Build & Halt Deployment]
+```
+
+### Pipeline Workflow (`.github/workflows/ci-cd.yml`)
+1. **CI Job (`test`)**:
+   - Triggers on every `push` to `main` and on `pull_request`.
+   - Spins up an `ubuntu-latest` virtual machine.
+   - Installs Python 3.11, Google Chrome, and Selenium dependencies.
+   - Runs `python run_tests.py`.
+2. **CD Job (`deploy`)**:
+   - Depends on the `test` job passing successfully.
+   - Packages and securely deploys the web application to **GitHub Pages**.
+   - Generates the live production URL.
+
