@@ -6,7 +6,6 @@
     <title>Student Management System - Login</title>
     <link rel="stylesheet" href="css/style.css">
     <style>
-        /* Fallback safety styles */
         body { font-family: 'Plus Jakarta Sans', Arial, sans-serif; }
         .login-box { display: contents; }
     </style>
@@ -47,7 +46,6 @@
             </button>
         </form>
 
-        <!-- Quick Demo Credentials helper for teachers & testing -->
         <div class="demo-box">
             <div class="demo-box-header">
                 <span>Demo Credentials:</span>
@@ -62,7 +60,6 @@
     </div>
 
     <script>
-        // Ensure default admin user is initialized in localStorage
         if (!localStorage.getItem('users')) {
             localStorage.setItem('users', JSON.stringify([
                 { name: 'Admin', email: 'admin@sms.com', password: 'admin123', role: 'Administrator' }

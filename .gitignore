@@ -1,8 +1,5 @@
-# OS files
 .DS_Store
 Thumbs.db
-
-# Python
 __pycache__/
 *.py[cod]
 *$py.class
@@ -12,14 +9,10 @@ env/
 venv/
 .venv/
 ENV/
-
-# Test reports
 .pytest_cache/
 .coverage
 htmlcov/
 *.log
-
-# IDEs
 .vscode/
 .idea/
 *.swp

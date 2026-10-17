@@ -19,7 +19,6 @@ try:
     driver.get(register_url)
     time.sleep(1)
 
-    # Clean test state
     driver.execute_script("localStorage.clear();")
     driver.refresh()
     time.sleep(1)
