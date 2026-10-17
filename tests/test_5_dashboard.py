@@ -1,15 +1,28 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-import time, os
+from selenium.webdriver.chrome.options import Options
+import time, os, sys
 
 project_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 register_url = "file:///" + os.path.join(project_dir, "register.html").replace("\\", "/")
 
-driver = webdriver.Chrome()
+options = Options()
+options.add_argument("--headless=new")
+options.add_argument("--no-sandbox")
+options.add_argument("--disable-dev-shm-usage")
+options.add_argument("--disable-gpu")
+options.add_argument("--window-size=1920,1080")
+
+driver = webdriver.Chrome(options=options)
 
 try:
     driver.get(register_url)
-    time.sleep(2)
+    time.sleep(1)
+
+    # Clean test state
+    driver.execute_script("localStorage.clear();")
+    driver.refresh()
+    time.sleep(1)
 
     print("Page Title:", driver.title)
 
@@ -20,16 +33,20 @@ try:
     print("Filled registration form.")
 
     driver.find_element(By.ID, "registerBtn").click()
-    time.sleep(2)
+    time.sleep(1)
 
     success_msg = driver.find_element(By.ID, "successMessage")
     if success_msg.is_displayed():
         print("TEST PASSED: Registration successful -", success_msg.text)
+    else:
+        print("TEST FAILED: Registration success message not displayed.")
+        sys.exit(1)
 
     print("\nTest-5 Register Page Test: COMPLETED")
 
 except Exception as e:
     print("Error:", e)
+    sys.exit(1)
 finally:
     driver.quit()
     print("Browser closed.")

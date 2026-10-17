@@ -1,63 +1,519 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Management System - Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
     <style>
-        body { font-family: Arial, sans-serif; background: #f0f0f0; margin: 0; }
-        .navbar { background: #4CAF50; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .navbar h2 { margin: 0; }
-        .navbar button { background: white; color: #4CAF50; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; }
-        .content { padding: 20px; max-width: 800px; margin: 0 auto; }
-        h3 { color: #333; }
-        table { width: 100%; background: white; border-collapse: collapse; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        th { background: #4CAF50; color: white; padding: 12px; text-align: left; }
-        td { padding: 12px; border-bottom: 1px solid #eee; }
-        tr:hover { background: #f5f5f5; }
-        .welcome { color: white; font-size: 14px; }
+        /* Fallback compatibility */
+        .welcome { color: inherit; font-size: 0.9375rem; font-weight: 600; }
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <h2>Student Management System</h2>
-        <div>
-            <span class="welcome" id="navUserName">Welcome</span>
-            &nbsp;&nbsp;
-            <button id="logoutBtn">Logout</button>
+    <div class="dashboard-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="auth-logo" style="width: 36px; height: 36px; margin-bottom: 0;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                        <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                    </svg>
+                </div>
+                <h2>SMS Portal</h2>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="nav-item active">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#students" class="nav-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    <span>All Students</span>
+                </a>
+                <a href="#departments" class="nav-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    <span>Departments</span>
+                </a>
+                <a href="#reports" class="nav-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="20" x2="18" y2="10"></line>
+                        <line x1="12" y1="20" x2="12" y2="4"></line>
+                        <line x1="6" y1="20" x2="6" y2="14"></line>
+                    </svg>
+                    <span>Analytics</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <span style="font-size: 0.8125rem; color: #64748b;">SMS v2.1.0 &bull; CI/CD Ready</span>
+            </div>
+        </aside>
+
+        <!-- Main Content View -->
+        <main class="main-content">
+            <!-- Top Navbar (includes original IDs for selenium tests) -->
+            <header class="top-navbar navbar">
+                <div>
+                    <h2 style="font-size: 1.25rem; font-weight: 700;">Student Management System</h2>
+                </div>
+
+                <div class="navbar-user-section">
+                    <button class="theme-toggle-btn" id="themeToggleBtn" title="Toggle Dark/Light Mode" onclick="toggleTheme()">
+                        <svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                    </button>
+
+                    <div class="user-profile-badge">
+                        <div class="user-avatar" id="avatarInitial">A</div>
+                        <span class="welcome" id="navUserName">Welcome</span>
+                    </div>
+
+                    <button id="logoutBtn" class="btn btn-secondary btn-sm" title="Sign out">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard Body -->
+            <div class="dashboard-body content">
+                <div class="page-header">
+                    <div>
+                        <h3>Student Dashboard</h3>
+                        <p>Manage, track, and monitor student academic records in real time</p>
+                    </div>
+                    <div style="display: flex; gap: 0.75rem;">
+                        <button class="btn btn-secondary" onclick="exportToCSV()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            <span>Export CSV</span>
+                        </button>
+                        <button class="btn btn-primary" onclick="openAddModal()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            <span>Add Student</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Metric Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">🎓</div>
+                        <div class="stat-info">
+                            <h4>Total Students</h4>
+                            <div class="stat-number" id="totalStudentsCount">5</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">✅</div>
+                        <div class="stat-info">
+                            <h4>Active Enrolled</h4>
+                            <div class="stat-number" id="activeStudentsCount">4</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple">📊</div>
+                        <div class="stat-info">
+                            <h4>Average GPA</h4>
+                            <div class="stat-number" id="avgGpaValue">3.72</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon amber">🏛️</div>
+                        <div class="stat-info">
+                            <h4>Departments</h4>
+                            <div class="stat-number" id="totalDeptsCount">4</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table Controls (Search, Filter) -->
+                <div class="table-controls">
+                    <div class="search-filter-group">
+                        <div class="search-input-wrapper">
+                            <span class="search-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                            </span>
+                            <input type="text" id="searchInput" placeholder="Search by name, ID, or email..." oninput="filterStudents()">
+                        </div>
+                        <select id="deptFilter" onchange="filterStudents()" style="width: 190px;">
+                            <option value="">All Departments</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Software Engineering">Software Engineering</option>
+                            <option value="Information Technology">Information Technology</option>
+                            <option value="Electrical Engineering">Electrical Engineering</option>
+                        </select>
+                        <select id="statusFilter" onchange="filterStudents()" style="width: 140px;">
+                            <option value="">All Statuses</option>
+                            <option value="Active">Active</option>
+                            <option value="On Leave">On Leave</option>
+                            <option value="Graduated">Graduated</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Student Data Table Card -->
+                <div class="table-card">
+                    <div class="table-responsive">
+                        <table id="studentTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Student</th>
+                                    <th>Department</th>
+                                    <th>GPA</th>
+                                    <th>Status</th>
+                                    <th style="text-align: right;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentTableBody">
+                                <!-- Populated dynamically by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Student Add/Edit Modal Dialog -->
+    <div class="modal-overlay" id="studentModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 id="modalTitle">Add New Student</h3>
+                <button type="button" class="modal-close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="studentForm" onsubmit="handleSaveStudent(event)">
+                <input type="hidden" id="editIndex" value="-1">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="modalStudentId">Student ID</label>
+                        <input type="text" id="modalStudentId" placeholder="e.g. STU-006" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modalStudentName">Full Name</label>
+                        <input type="text" id="modalStudentName" placeholder="e.g. Ayesha Siddiqa" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modalStudentEmail">Institutional Email</label>
+                        <input type="email" id="modalStudentEmail" placeholder="e.g. ayesha@student.com" required>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="modalStudentDept">Department</label>
+                            <select id="modalStudentDept" required>
+                                <option value="Computer Science">Computer Science</option>
+                                <option value="Software Engineering">Software Engineering</option>
+                                <option value="Information Technology">Information Technology</option>
+                                <option value="Electrical Engineering">Electrical Engineering</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="modalStudentGpa">GPA (0.00 - 4.00)</label>
+                            <input type="number" id="modalStudentGpa" step="0.01" min="0" max="4.00" value="3.50" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="modalStudentStatus">Enrollment Status</label>
+                        <select id="modalStudentStatus">
+                            <option value="Active">Active</option>
+                            <option value="On Leave">On Leave</option>
+                            <option value="Graduated">Graduated</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveStudentBtn">Save Record</button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <div class="content">
-        <h3>Student Dashboard</h3>
-        <table id="studentTable">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Department</th>
-                </tr>
-            </thead>
-            <tbody id="studentTableBody">
-                <tr><td>STU-001</td><td>Rahim Ahmed</td><td>rahim@student.com</td><td>Computer Science</td></tr>
-                <tr><td>STU-002</td><td>Fatima Khan</td><td>fatima@student.com</td><td>Software Engineering</td></tr>
-                <tr><td>STU-003</td><td>Arif Hossain</td><td>arif@student.com</td><td>Computer Science</td></tr>
-                <tr><td>STU-004</td><td>Nusrat Jahan</td><td>nusrat@student.com</td><td>Information Technology</td></tr>
-                <tr><td>STU-005</td><td>Kamal Uddin</td><td>kamal@student.com</td><td>Electrical Engineering</td></tr>
-            </tbody>
-        </table>
-    </div>
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
 
     <script>
+        // Authentication check (compatible with original flow & tests)
         var currentUser = JSON.parse(localStorage.getItem('currentUser'));
         if (!currentUser) {
             window.location.href = 'index.html';
         } else {
-            document.getElementById('navUserName').textContent = 'Welcome, ' + currentUser.name;
+            var userName = currentUser.name || 'User';
+            document.getElementById('navUserName').textContent = 'Welcome, ' + userName;
+            document.getElementById('avatarInitial').textContent = userName.charAt(0).toUpperCase();
         }
+
         document.getElementById('logoutBtn').addEventListener('click', function() {
             localStorage.removeItem('currentUser');
             window.location.href = 'index.html';
         });
+
+        // Initial default student dataset (preserves original STU-001 through STU-005)
+        var defaultStudents = [
+            { id: "STU-001", name: "Rahim Ahmed", email: "rahim@student.com", dept: "Computer Science", gpa: 3.85, status: "Active" },
+            { id: "STU-002", name: "Fatima Khan", email: "fatima@student.com", dept: "Software Engineering", gpa: 3.92, status: "Active" },
+            { id: "STU-003", name: "Arif Hossain", email: "arif@student.com", dept: "Computer Science", gpa: 3.45, status: "On Leave" },
+            { id: "STU-004", name: "Nusrat Jahan", email: "nusrat@student.com", dept: "Information Technology", gpa: 3.78, status: "Active" },
+            { id: "STU-005", name: "Kamal Uddin", email: "kamal@student.com", dept: "Electrical Engineering", gpa: 3.60, status: "Graduated" }
+        ];
+
+        function getStudents() {
+            var stored = localStorage.getItem('sms_students');
+            if (!stored) {
+                localStorage.setItem('sms_students', JSON.stringify(defaultStudents));
+                return defaultStudents;
+            }
+            try {
+                return JSON.parse(stored);
+            } catch(e) {
+                return defaultStudents;
+            }
+        }
+
+        function saveStudents(list) {
+            localStorage.setItem('sms_students', JSON.stringify(list));
+            renderTable();
+            updateStats();
+        }
+
+        // Render Table Rows
+        function renderTable() {
+            var all = getStudents();
+            var search = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+            var deptFilter = document.getElementById('deptFilter').value;
+            var statusFilter = document.getElementById('statusFilter').value;
+
+            var filtered = all.filter(function(s) {
+                var matchesSearch = s.name.toLowerCase().includes(search) || 
+                                    s.id.toLowerCase().includes(search) || 
+                                    s.email.toLowerCase().includes(search);
+                var matchesDept = !deptFilter || s.dept === deptFilter;
+                var matchesStatus = !statusFilter || s.status === statusFilter;
+                return matchesSearch && matchesDept && matchesStatus;
+            });
+
+            var tbody = document.getElementById('studentTableBody');
+            tbody.innerHTML = '';
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2.5rem;">No students found matching current filters.</td></tr>';
+                return;
+            }
+
+            filtered.forEach(function(s, index) {
+                var tr = document.createElement('tr');
+                
+                // Status badge class
+                var statusClass = 'badge-success';
+                if (s.status === 'On Leave') statusClass = 'badge-warning';
+                if (s.status === 'Graduated') statusClass = 'badge-info';
+
+                // Initial avatar
+                var initial = s.name.charAt(0).toUpperCase();
+
+                tr.innerHTML = 
+                    '<td><strong>' + escapeHtml(s.id) + '</strong></td>' +
+                    '<td>' +
+                        '<div class="student-info-cell">' +
+                            '<div class="student-mini-avatar">' + initial + '</div>' +
+                            '<div>' +
+                                '<div style="font-weight: 600; color: var(--text-primary);">' + escapeHtml(s.name) + '</div>' +
+                                '<div style="font-size: 0.8125rem; color: var(--text-muted);">' + escapeHtml(s.email) + '</div>' +
+                            '</div>' +
+                        '</div>' +
+                    '</td>' +
+                    '<td><span class="badge badge-dept">' + escapeHtml(s.dept) + '</span></td>' +
+                    '<td><strong>' + Number(s.gpa).toFixed(2) + '</strong></td>' +
+                    '<td><span class="badge ' + statusClass + '">' + escapeHtml(s.status) + '</span></td>' +
+                    '<td style="text-align: right;">' +
+                        '<div class="action-buttons" style="justify-content: flex-end;">' +
+                            '<button class="btn btn-secondary btn-sm" onclick="openEditModal(\'' + escapeHtml(s.id) + '\')">Edit</button>' +
+                            '<button class="btn btn-danger btn-sm" onclick="deleteStudent(\'' + escapeHtml(s.id) + '\')">Delete</button>' +
+                        '</div>' +
+                    '</td>';
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Live stats calculation
+        function updateStats() {
+            var list = getStudents();
+            var total = list.length;
+            var active = list.filter(function(s) { return s.status === 'Active'; }).length;
+            var depts = new Set(list.map(function(s) { return s.dept; })).size;
+            var avgGpa = total > 0 ? (list.reduce(function(acc, s) { return acc + Number(s.gpa || 0); }, 0) / total).toFixed(2) : '0.00';
+
+            document.getElementById('totalStudentsCount').textContent = total;
+            document.getElementById('activeStudentsCount').textContent = active;
+            document.getElementById('avgGpaValue').textContent = avgGpa;
+            document.getElementById('totalDeptsCount').textContent = depts;
+        }
+
+        function filterStudents() {
+            renderTable();
+        }
+
+        // Modal Handlers
+        function openAddModal() {
+            document.getElementById('modalTitle').textContent = 'Add New Student';
+            document.getElementById('editIndex').value = '-1';
+            document.getElementById('studentForm').reset();
+            
+            // Auto generate next ID
+            var list = getStudents();
+            var nextNum = list.length + 1;
+            document.getElementById('modalStudentId').value = 'STU-' + String(nextNum).padStart(3, '0');
+            document.getElementById('modalStudentGpa').value = '3.50';
+
+            document.getElementById('studentModal').classList.add('open');
+        }
+
+        function openEditModal(id) {
+            var list = getStudents();
+            var student = list.find(function(s) { return s.id === id; });
+            if (!student) return;
+
+            document.getElementById('modalTitle').textContent = 'Edit Student Details';
+            document.getElementById('editIndex').value = id;
+            document.getElementById('modalStudentId').value = student.id;
+            document.getElementById('modalStudentName').value = student.name;
+            document.getElementById('modalStudentEmail').value = student.email;
+            document.getElementById('modalStudentDept').value = student.dept;
+            document.getElementById('modalStudentGpa').value = student.gpa;
+            document.getElementById('modalStudentStatus').value = student.status;
+
+            document.getElementById('studentModal').classList.add('open');
+        }
+
+        function closeModal() {
+            document.getElementById('studentModal').classList.remove('open');
+        }
+
+        function handleSaveStudent(e) {
+            e.preventDefault();
+            var list = getStudents();
+            var editId = document.getElementById('editIndex').value;
+            
+            var studentData = {
+                id: document.getElementById('modalStudentId').value.trim(),
+                name: document.getElementById('modalStudentName').value.trim(),
+                email: document.getElementById('modalStudentEmail').value.trim(),
+                dept: document.getElementById('modalStudentDept').value,
+                gpa: parseFloat(document.getElementById('modalStudentGpa').value) || 0.0,
+                status: document.getElementById('modalStudentStatus').value
+            };
+
+            if (editId === '-1') {
+                // Check if ID exists
+                if (list.some(function(s) { return s.id.toLowerCase() === studentData.id.toLowerCase(); })) {
+                    alert('Student ID already exists! Please choose another.');
+                    return;
+                }
+                list.push(studentData);
+                showToast('Student ' + studentData.name + ' added successfully!');
+            } else {
+                var idx = list.findIndex(function(s) { return s.id === editId; });
+                if (idx !== -1) {
+                    list[idx] = studentData;
+                    showToast('Student ' + studentData.name + ' updated successfully!');
+                }
+            }
+
+            saveStudents(list);
+            closeModal();
+        }
+
+        function deleteStudent(id) {
+            if (confirm('Are you sure you want to delete student with ID ' + id + '?')) {
+                var list = getStudents();
+                list = list.filter(function(s) { return s.id !== id; });
+                saveStudents(list);
+                showToast('Student ' + id + ' removed.');
+            }
+        }
+
+        function exportToCSV() {
+            var list = getStudents();
+            var csv = 'ID,Name,Email,Department,GPA,Status\n';
+            list.forEach(function(s) {
+                csv += '"' + s.id + '","' + s.name + '","' + s.email + '","' + s.dept + '",' + s.gpa + ',"' + s.status + '"\n';
+            });
+            var blob = new Blob([csv], { type: 'text/csv' });
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.setAttribute('hidden', '');
+            a.setAttribute('href', url);
+            a.setAttribute('download', 'sms_students_' + new Date().toISOString().slice(0, 10) + '.csv');
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            showToast('Student list exported to CSV!');
+        }
+
+        function toggleTheme() {
+            var current = document.documentElement.getAttribute('data-theme');
+            var next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('sms_theme', next);
+        }
+
+        // Apply saved theme
+        var savedTheme = localStorage.getItem('sms_theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        function showToast(message) {
+            var container = document.getElementById('toastContainer');
+            var toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = '<span>🔔 ' + escapeHtml(message) + '</span>';
+            container.appendChild(toast);
+            setTimeout(function() {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(10px)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(function() { toast.remove(); }, 300);
+            }, 3000);
+        }
+
+        function escapeHtml(text) {
+            var map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+            return String(text).replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
+
+        // Initialize display
+        renderTable();
+        updateStats();
     </script>
 </body>
 </html>
